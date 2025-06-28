@@ -1,0 +1,49 @@
+<ActionBar title="Reportes">
+  <NavigationButton text="Atrás" android.systemIcon="ic_menu_back"></NavigationButton>
+</ActionBar>
+
+<ScrollView>
+  <StackLayout class="p-4">
+    <!-- Summary Cards -->
+    <GridLayout rows="auto, auto" columns="*, *" class="mb-4">
+      <StackLayout row="0" col="0" class="bg-white p-4 m-1 rounded-lg">
+        <Label text="Préstamos Hoy" class="text-gray-600"></Label>
+        <Label [text]="todayLoans.length" class="text-2xl font-bold"></Label>
+      </StackLayout>
+
+      <StackLayout row="0" col="1" class="bg-white p-4 m-1 rounded-lg">
+        <Label text="Total Prestado" class="text-gray-600"></Label>
+        <Label [text]="'$' + totalLoaned" class="text-2xl font-bold"></Label>
+      </StackLayout>
+
+      <StackLayout row="1" col="0" class="bg-white p-4 m-1 rounded-lg">
+        <Label text="Pagos Recibidos" class="text-gray-600"></Label>
+        <Label [text]="'$' + totalPayments" class="text-2xl font-bold"></Label>
+      </StackLayout>
+
+      <StackLayout row="1" col="1" class="bg-white p-4 m-1 rounded-lg">
+        <Label text="Total Moras" class="text-gray-600"></Label>
+        <Label [text]="'$' + totalLateFees" class="text-2xl font-bold"></Label>
+      </StackLayout>
+    </GridLayout>
+
+    <!-- Today's Loans List -->
+    <Label text="Préstamos de Hoy" class="text-lg font-bold mb-2"></Label>
+    <ListView [items]="todayLoans" class="list-group">
+      <ng-template let-loan="item">
+        <GridLayout rows="auto, auto" columns="*, auto" class="list-group-item p-4">
+          <Label row="0" col="0" [text]="loan.clientName" class="font-bold"></Label>
+          <Label row="0" col="1" [text]="'$' + loan.amount" class="text-right"></Label>
+          <Label row="1" col="0" [text]="loan.paymentFrequency" class="text-gray-600"></Label>
+          <Label row="1" col="1" [text]="getPaymentStatus(loan)" class="text-right"></Label>
+        </GridLayout>
+      </ng-template>
+    </ListView>
+
+    <Label
+      *ngIf="errorMessage"
+      [text]="errorMessage"
+      class="text-danger text-center mt-4"
+    ></Label>
+  </StackLayout>
+</ScrollView>

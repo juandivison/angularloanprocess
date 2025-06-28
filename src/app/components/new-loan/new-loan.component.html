@@ -1,0 +1,85 @@
+<ActionBar title="Nuevo Préstamo">
+  <NavigationButton text="Atrás" android.systemIcon="ic_menu_back"></NavigationButton>
+</ActionBar>
+
+<ScrollView>
+  <StackLayout class="p-4">
+    <StackLayout class="form">
+      <StackLayout class="input-field">
+        <Label text="Nombre del Cliente" class="label"></Label>
+        <TextField
+          [(ngModel)]="loan.clientName"
+          class="input"
+        ></TextField>
+      </StackLayout>
+
+      <StackLayout class="input-field">
+        <Label text="Monto" class="label"></Label>
+        <TextField
+          [(ngModel)]="loan.amount"
+          keyboardType="number"
+          class="input"
+        ></TextField>
+      </StackLayout>
+
+      <StackLayout class="input-field">
+        <Label text="Tasa de Interés (%)" class="label"></Label>
+        <TextField
+          [(ngModel)]="loan.interestRate"
+          keyboardType="number"
+          class="input"
+        ></TextField>
+      </StackLayout>
+
+      <StackLayout class="input-field">
+        <Label text="Número de Cuotas" class="label"></Label>
+        <TextField
+          [(ngModel)]="loan.installments"
+          keyboardType="number"
+          class="input"
+        ></TextField>
+      </StackLayout>
+
+      <StackLayout class="input-field">
+        <Label text="Frecuencia de Pago" class="label"></Label>
+        <ListPicker
+          [items]="frequencyLabels"
+          [selectedIndex]="selectedFrequencyIndex"
+          (selectedIndexChange)="onFrequencyChange($event)"
+          class="picker"
+        ></ListPicker>
+      </StackLayout>
+
+      <StackLayout class="input-field">
+        <Label text="Días de Gracia" class="label"></Label>
+        <TextField
+          [(ngModel)]="loan.gracePeriod"
+          keyboardType="number"
+          class="input"
+        ></TextField>
+      </StackLayout>
+
+      <StackLayout class="input-field" *ngIf="loan.installments > 1">
+        <Label text="Configuración de Abonos" class="label"></Label>
+        <Switch
+          [(ngModel)]="loan.applyAdvanceToCapital"
+          class="switch"
+        ></Switch>
+        <Label text="Aplicar abonos extra al capital (recalcular cuotas)" class="text-sm text-gray-600"></Label>
+      </StackLayout>
+
+      <Button
+        text="Crear Préstamo"
+        (tap)="onCreateLoan()"
+        [isEnabled]="!isLoading"
+        class="btn btn-primary"
+      ></Button>
+
+      <Label
+        *ngIf="errorMessage"
+        [text]="errorMessage"
+        class="text-danger text-center"
+      ></Label>
+    </StackLayout>
+  </StackLayout>
+</ScrollView>

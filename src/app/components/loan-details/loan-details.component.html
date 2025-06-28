@@ -1,0 +1,111 @@
+<ActionBar [title]="loan?.clientName || 'Detalles del Préstamo'">
+  <NavigationButton text="Atrás" android.systemIcon="ic_menu_back"></NavigationButton>
+</ActionBar>
+
+<ScrollView>
+  <StackLayout class="p-4">
+    <!-- Loan Details -->
+    <GridLayout rows="auto, auto, auto, auto, auto, auto" columns="*, *" class="bg-white p-4 rounded-lg mb-4">
+      <Label row="0" col="0" text="Monto:" class="text-gray-600"></Label>
+      <Label row="0" col="1" [text]="'$' + loan?.amount" class="text-right font-bold"></Label>
+      
+      <Label row="1" col="0" text="Balance Pendiente:" class="text-gray-600"></Label>
+      <Label row="1" col="1" [text]="'$' + loan?.remainingBalance" class="text-right font-bold"></Label>
+      
+      <Label row="2" col="0" text="Tasa de Interés:" class="text-gray-600"></Label>
+      <Label row="2" col="1" [text]="loan?.interestRate + '%'" class="text-right"></Label>
+      
+      <Label row="3" col="0" text="Cuotas:" class="text-gray-600"></Label>
+      <Label row="3" col="1" [text]="loan?.installments" class="text-right"></Label>
+      
+      <Label row="4" col="0" text="Próximo Pago:" class="text-gray-600"></Label>
+      <Label row="4" col="1" [text]="formatDate(loan?.nextPaymentDate)" class="text-right"></Label>
+      
+      <Label row="5" col="0" text="Estado:" class="text-gray-600"></Label>
+      <Label row="5" col="1" [text]="loan?.status" class="text-right"></Label>
+    </GridLayout>
+
+    <!-- Payment Breakdown Preview -->
+    <StackLayout class="bg-white p-4 rounded-lg mb-4" *ngIf="paymentBreakdown">
+      <Label text="Desglose del Pago" class="text-lg font-bold mb-2"></Label>
+      
+      <GridLayout rows="auto, auto, auto, auto" columns="*, *" class="mb-2">
+        <Label row="0" col="0" text="Mora:" class="text-gray-600"></Label>
+        <Label row="0" col="1" [text]="'$' + paymentBreakdown.lateFee" class="text-right text-red-500"></Label>
+        
+        <Label row="1" col="0" text="Interés:" class="text-gray-600"></Label>
+        <Label row="1" col="1" [text]="'$' + paymentBreakdown.interest" class="text-right text-blue-500"></Label>
+        
+        <Label row="2" col="0" text="Capital:" class="text-gray-600"></Label>
+        <Label row="2" col="1" [text]="'$' + paymentBreakdown.capital" class="text-right text-green-500"></Label>
+        
+        <Label row="3" col="0" text="Abono Extra:" class="text-gray-600"></Label>
+        <Label row="3" col="1" [text]="'$' + paymentBreakdown.advance" class="text-right text-purple-500"></Label>
+      </GridLayout>
+    </StackLayout>
+
+    <!-- New Payment Form -->
+    <StackLayout class="bg-white p-4 rounded-lg mb-4">
+      <Label text="Registrar Pago" class="text-lg font-bold mb-2"></Label>
+      
+      <TextField
+        [(ngModel)]="newPayment.amount"
+        (textChange)="onPaymentAmountChange()"
+        hint="Monto del Pago"
+        keyboardType="number"
+        class="input mb-2"
+      ></TextField>
+
+      <StackLayout class="mb-2" *ngIf="loan?.installments > 1 && paymentBreakdown?.advance > 0">
+        <Switch
+          [(ngModel)]="applyAdvanceToCapital"
+          class="switch"
+        ></Switch>
+        <Label text="Aplicar abono extra al capital (recalcular cuotas)" class="text-sm text-gray-600"></Label>
+      </StackLayout>
+
+      <Button
+        text="Registrar Pago"
+        (tap)="recordPayment()"
+        [isEnabled]="!isLoading && newPayment.amount > 0"
+        class="btn btn-primary"
+      ></Button>
+
+      <Label
+        *ngIf="errorMessage"
+        [text]="errorMessage"
+        class="text-danger text-center mt-2"
+      ></Label>
+    </StackLayout>
+
+    <!-- Payment History -->
+    <Label text="Historial de Pagos" class="text-lg font-bold mb-2"></Label>
+    <ListView [items]="payments" class="list-group">
+      <ng-template let-payment="item">
+        <StackLayout class="list-group-item p-4">
+          <GridLayout rows="auto, auto" columns="*, auto">
+            <Label row="0" col="0" [text]="'$' + payment.amount" class="font-bold"></Label>
+            <Label row="0" col="1" [text]="getPaymentStatus(payment)" class="text-right"></Label>
+            <Label row="1" col="0" [text]="formatDate(payment.paymentDate)" class="text-gray-600"></Label>
+            <Label row="1" col="1" *ngIf="payment.lateFeeAmount > 0" [text]="'Mora: $' + payment.lateFeeAmount" class="text-right text-red-500"></Label>
+          </GridLayout>
+          
+          <!-- Payment Breakdown -->
+          <GridLayout rows="auto, auto, auto, auto" columns="auto, *, auto" class="mt-2" *ngIf="payment.interestAmount > 0 || payment.capitalAmount > 0 || payment.advanceAmount > 0">
+            <Label row="0" col="0" text="• " class="text-blue-500"></Label>
+            <Label row="0" col="1" text="Interés:" class="text-sm text-gray-600"></Label>
+            <Label row="0" col="2" [text]="'$' + payment.interestAmount" class="text-sm text-blue-500"></Label>
+            
+            <Label row="1" col="0" text="• " class="text-green-500"></Label>
+            <Label row="1" col="1" text="Capital:" class="text-sm text-gray-600"></Label>
+            <Label row="1" col="2" [text]="'$' + payment.capitalAmount" class="text-sm text-green-500"></Label>
+            
+            <Label row="2" col="0" text="• " class="text-purple-500" *ngIf="payment.advanceAmount > 0"></Label>
+            <Label row="2" col="1" text="Abono Extra:" class="text-sm text-gray-600" *ngIf="payment.advanceAmount > 0"></Label>
+            <Label row="2" col="2" [text]="'$' + payment.advanceAmount" class="text-sm text-purple-500" *ngIf="payment.advanceAmount > 0"></Label>
+          </GridLayout>
+        </StackLayout>
+      </ng-template>
+    </ListView>
+  </StackLayout>
+</ScrollView>

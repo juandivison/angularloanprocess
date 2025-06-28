@@ -1,0 +1,45 @@
+<ActionBar title="Iniciar Sesión"></ActionBar>
+
+<StackLayout class="p-4">
+  <StackLayout class="form">
+    <StackLayout class="input-field">
+      <TextField
+        [(ngModel)]="email"
+        hint="Email"
+        keyboardType="email"
+        autocorrect="false"
+        autocapitalizationType="none"
+        class="input"
+      ></TextField>
+    </StackLayout>
+
+    <StackLayout class="input-field">
+      <TextField
+        [(ngModel)]="password"
+        hint="Contraseña"
+        secure="true"
+        class="input"
+      ></TextField>
+    </StackLayout>
+
+    <Button
+      text="Iniciar Sesión"
+      (tap)="onLogin()"
+      [isEnabled]="!isLoading"
+      class="btn btn-primary"
+    ></Button>
+
+    <Button
+      text="Registrarse"
+      (tap)="onSignUp()"
+      [isEnabled]="!isLoading"
+      class="btn btn-secondary"
+    ></Button>
+
+    <Label
+      *ngIf="errorMessage"
+      [text]="errorMessage"
+      class="text-danger text-center"
+    ></Label>
+  </StackLayout>
+</StackLayout>

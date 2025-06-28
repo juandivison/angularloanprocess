@@ -1,0 +1,22 @@
+<ActionBar title="Gestión de Préstamos">
+  <ActionItem position="right" text="+ Nuevo" (tap)="onNewLoan()"></ActionItem>
+  <ActionItem position="right" text="Reportes" (tap)="onViewReports()"></ActionItem>
+</ActionBar>
+
+<GridLayout rows="auto, *">
+  <StackLayout row="0" class="p-4 bg-gray-100">
+    <Label text="Préstamos Activos" class="text-lg font-bold"></Label>
+  </StackLayout>
+
+  <ListView row="1" [items]="activeLoans" class="list-group">
+    <ng-template let-loan="item">
+      <GridLayout columns="*, auto" class="list-group-item p-4" (tap)="onLoanTap(loan.id)">
+        <StackLayout col="0">
+          <Label [text]="loan.clientName" class="font-bold"></Label>
+          <Label [text]="'Balance: $' + loan.remainingBalance"></Label>
+        </StackLayout>
+        <Label col="1" [text]="loan.status" class="text-right"></Label>
+      </GridLayout>
+    </ng-template>
+  </ListView>
+</GridLayout>
