@@ -3,6 +3,12 @@
   "main": "./src/main.ts",
   "version": "1.0.0",
   "private": true,
+  "scripts": {
+    "build": "ns build android",
+    "build:ios": "ns build ios",
+    "preview": "ns preview",
+    "clean": "ns clean"
+  },
   "dependencies": {
     "@angular/animations": "~18.0.0",
     "@angular/common": "~18.0.0",
