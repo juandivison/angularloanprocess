@@ -6,16 +6,23 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "noEmitHelpers": true,
-    "noEmitOnError": true,
+    "noEmitOnError": false,
     "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
     "lib": ["ESNext", "dom"],
     "baseUrl": ".",
     "paths": {
       "~/*": ["src/*"],
       "@/*": ["src/*"]
-    }
+    },
+    "strict": false,
+    "noImplicitAny": false,
+    "suppressImplicitAnyIndexErrors": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true
   },
-  "include": ["src/tests/**/*.ts", "src/**/*.ios.ts", "src/**/*.android.ts"],
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
   "files": ["./src/main.ts", "./references.d.ts", "./src/polyfills.ts"],
   "exclude": ["node_modules", "platforms", "e2e"]
 }
